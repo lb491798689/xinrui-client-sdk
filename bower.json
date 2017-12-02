@@ -1,27 +1,13 @@
 {
-  "name": "qcloud-weapp-client-demo",
-  "description": "QCloud Wechat App Demo",
-  "main": "app.js",
+  "name": "xinrui-client-sdk",
   "authors": [
-    "Tencent Clound"
+    "qdxinrui <tangxinzhang@126.com>"
   ],
-  "license": "MIT",
+  "description": "微信小程序客户端代码库",
+  "main": "",
   "keywords": [
-    "qcloud",
-    "wechat",
-    "weapp",
-    "demo",
-    "sdk"
+    "xinrui"
   ],
-  "homepage": "",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "qcloud-weapp-client-sdk": "*"
-  }
+  "license": "XINRUI",
+  "homepage": ""
 }
