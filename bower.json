@@ -1,5 +1,5 @@
 {
-  "name": "xinrui-client-sdk",
+  "name": "xinrui-wx-sdk",
   "authors": [
     "qdxinrui <tangxinzhang@126.com>"
   ],
@@ -8,6 +8,6 @@
   "keywords": [
     "xinrui"
   ],
-  "license": "XINRUI",
+  "license": "MIT",
   "homepage": ""
 }
