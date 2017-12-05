@@ -100,7 +100,7 @@ function request(options){
                 }
                 
                 callSuccess.apply(null, arguments);
-            }
+            },
             fail: callFail,
             complete: noop,
         }));
