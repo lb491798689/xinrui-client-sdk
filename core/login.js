@@ -93,6 +93,13 @@ var login = function login(options)
         header[constants.WX_HEADER_ENCRYPTED_DATA] = encryptedData;
         header[constants.WX_HEADER_IV] = iv;
 
+
+            var error = new LoginError(constants.ERR_LOGIN_FAILED, 
+                    code);
+                options.fail(error);
+
+                return;
+
         // 请求服务器登录地址，获得会话信息
         wx.request({
             url : options.loginUrl,
