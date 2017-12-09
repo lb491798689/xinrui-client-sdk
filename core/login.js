@@ -107,6 +107,9 @@ var login = function login(options)
             method:options.method,
             data:options.data,
             success:function(result){
+
+                console.log(result);
+
                 var data = result.data;
                 // 成功地响应会话信息
                 if(data && data[constants.WX_SESSION_MAGIC_ID]){
