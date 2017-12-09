@@ -94,11 +94,11 @@ var login = function login(options)
         header[constants.WX_HEADER_IV] = iv;
 
 
-            var error = new LoginError(constants.ERR_LOGIN_FAILED, 
-                    code);
-                options.fail(error);
+           // var error = new LoginError(constants.ERR_LOGIN_FAILED, 
+                //    code);
+               // options.fail(error);
 
-                return;
+               // return;
 
         // 请求服务器登录地址，获得会话信息
         wx.request({

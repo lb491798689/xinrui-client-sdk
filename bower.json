@@ -9,5 +9,9 @@
     "xinrui"
   ],
   "license": "MIT",
-  "homepage": ""
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules"
+  ]
 }
