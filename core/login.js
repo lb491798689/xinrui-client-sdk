@@ -82,8 +82,8 @@ var login = function login(options)
             options.fail(wxLoginError);
             return;
         }
-        var userInfo = wxLoginResult.userInfo;
 
+        var userInfo = wxLoginResult.userInfo;
         // 构造请求头 ， 包括code \ encryptedData \ iv
         var header = {};
         var code = wxLoginResult.code;
@@ -93,13 +93,6 @@ var login = function login(options)
         header[constants.WX_HEADER_ENCRYPTED_DATA] = encryptedData;
         header[constants.WX_HEADER_IV] = iv;
 
-
-           // var error = new LoginError(constants.ERR_LOGIN_FAILED, 
-                //    code);
-               // options.fail(error);
-
-               // return;
-
         // 请求服务器登录地址，获得会话信息
         wx.request({
             url : options.loginUrl,
@@ -107,16 +100,14 @@ var login = function login(options)
             method:options.method,
             data:options.data,
             success:function(result){
-
                 console.log(result);
-
                 var data = result.data;
                 // 成功地响应会话信息
                 if(data && data[constants.WX_SESSION_MAGIC_ID]){
                     if(data.session){
                         data.session.userInfo = userInfo;
                         Session.set(data.session);
-                        options.success(userInfo);
+                        options.success(data.session);
                     }else{
                         var errorMessage = '登录失败(' + data.error + ')：' + (data.message || '未知错误');
                         var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
@@ -137,11 +128,13 @@ var login = function login(options)
         });
     });
  
+
+    // 本地缓存session_key  请求时需要校验一下
     var session = Session.get();
     if(session){
         wx.checkSession({
             success:function(){
-                options.success(session.userInfo);
+                options.success(data.session);
             },
             fail:function(){
                 Session.clear();
