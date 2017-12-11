@@ -105,7 +105,7 @@ var login = function login(options)
                 // 成功地响应会话信息
                 if(data && data[constants.WX_SESSION_MAGIC_ID]){
                     if(data.session){
-                        data.session.userInfo = userInfo;
+                        //data.session.userInfo = userInfo;
                         Session.set(data.session);
                         options.success(data.session);
                     }else{
