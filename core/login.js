@@ -101,16 +101,16 @@ var login = function login(options)
             data:options.data,
             success:function(result){
                 console.log(result);
-                if(result.code != constants.WX_SUCCESS_CODE)
-                {
-                    var errorMessage = '登录失败(' + result.code + ')：' + (result.msg || '未知错误');
-                    var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
-                    options.fail(noSessionError);
-                }
-                else{
-                    var data = result.data;
-                    // 成功地响应会话信息
-                    if(data && result[constants.WX_SESSION_MAGIC_ID]){
+                var data = result.data;
+                if(data && data[constants.WX_SESSION_MAGIC_ID]){
+                    if(data.code != constants.WX_SUCCESS_CODE)
+                    {
+                        var errorMessage = '登录失败(' + result.code + ')：' + (result.msg || '未知错误');
+                        var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
+                        options.fail(noSessionError);
+                    }
+                    else{
+                        // 成功地响应会话信息
                         if(data.session){
                             //data.session.userInfo = userInfo;
                             Session.set(data.session);
@@ -120,12 +120,13 @@ var login = function login(options)
                             var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
                             options.fail(noSessionError);
                         }
-                    // 没有正确响应会话信息
-                    }else{
-                        var errorMessage = '登录请求没有包含会话响应，请确保服务器处理 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
-                        var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
-                        options.fail(noSessionError);
+                        
                     }
+                }
+                else{
+                    var errorMessage = '登录请求没有包含会话响应，请确保服务器处理 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
+                    var noSessionError = new LoginError(constants.ERR_LOGIN_SESSION_NOT_RECEIVED, errorMessage);
+                    options.fail(noSessionError);
                 }
              
             },
