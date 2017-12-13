@@ -107,7 +107,7 @@ function request(options){
                      // 清除登录态
                     Session.clear();
                     message = '鉴权服务器检查登录态发生错误 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
-                    error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, errorMessage);
+                    error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                     callFail(error);
                 }
             },
