@@ -71,15 +71,13 @@ function request(options){
         wx.request(utils.extend({},options,{
             header:utils.extend({},originHeader,authHeader),
             success:function(response){
+                console.log(response);
                 var data = response.data;
+                if(data && data[constants.WX_SESSION_MAGIC_ID]){
 
-                // 如果响应的数据里面包含 SDK Magic ID，表示被服务端 SDK 处理过，此时一定包含登录态失败的信息
-                if (data && data[constants.WX_SESSION_MAGIC_ID]) {
-                    // 清除登录态
-                    Session.clear();
-
-                    var error, message;
-                    if (data.error === constants.ERR_INVALID_SESSION) {
+                    if(data.code != constants.WX_SUCCESS_CODE)
+                    {
+                        
                         // 如果是登录态无效，并且还没重试过，会尝试登录后刷新凭据重新请求
                         if (!hasRetried) {
                             hasRetried = true;
@@ -87,19 +85,31 @@ function request(options){
                             return;
                         }
 
-                        message = '登录态已过期';
-                        error = new RequestError(data.error, message);
-
-                    } else {
-                        message = '鉴权服务器检查登录态发生错误(' + (data.error || 'OTHER') + ')：' + (data.message || '未知错误');
+                        message = '登录态已过期(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
                         error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
+                        callFail(error);
+                        
                     }
-
-                    callFail(error);
-                    return;
+                    else{
+                        // 成功地响应会话信息
+                        if(data.session){
+                            //data.session.userInfo = userInfo;
+                            Session.set(data.session);
+                            callSuccess.apply(null, arguments);
+                        }else{
+                            message = '鉴权服务器检查登录态发生错误(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
+                            error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
+                            callFail(error);
+                        }                     
+                    }
                 }
-                
-                callSuccess.apply(null, arguments);
+                else{
+                     // 清除登录态
+                    Session.clear();
+                    message = '鉴权服务器检查登录态发生错误 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
+                    error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, errorMessage);
+                    callFail(error);
+                }
             },
             fail: callFail,
             complete: noop,
