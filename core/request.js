@@ -35,6 +35,7 @@ function request(options){
         throw new RequestError(constants.ERR_INVALID_PARAMS, message);
     }
 
+    var requireAuth  = options.auth;
     var requireLogin = options.login;
     var success      = options.success || noop;
     var fail         = options.fail || noop;
@@ -73,22 +74,25 @@ function request(options){
             success:function(response){
                 console.log(response);
                 var data = response.data;
-                if(data && data[constants.WX_SESSION_MAGIC_ID]){
-
-                    if(data.code != constants.WX_SUCCESS_CODE)
+                if(!requireAuth)
+                {
+                    if(data.code == constants.WX_SUCCESS_CODE)
                     {
-                        
+                        callSuccess.apply(null, arguments);
+                    }
+                }
+                else if(data && data[constants.WX_SESSION_MAGIC_ID]){
+                    if(data.code != constants.WX_SUCCESS_CODE)
+                    {                  
                         // 如果是登录态无效，并且还没重试过，会尝试登录后刷新凭据重新请求
                         if (!hasRetried) {
                             hasRetried = true;
                             doRequestWithLogin();
                             return;
                         }
-
                         var message = '登录态已过期(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
                         var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                         callFail(error);
-                        
                     }
                     else{
                         // 成功地响应会话信息
