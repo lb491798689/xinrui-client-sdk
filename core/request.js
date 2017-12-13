@@ -85,8 +85,8 @@ function request(options){
                             return;
                         }
 
-                        message = '登录态已过期(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
-                        error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
+                        var message = '登录态已过期(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
+                        var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                         callFail(error);
                         
                     }
@@ -97,8 +97,8 @@ function request(options){
                             Session.set(data.session);
                             callSuccess.apply(null, arguments);
                         }else{
-                            message = '鉴权服务器检查登录态发生错误(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
-                            error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
+                            var message = '鉴权服务器检查登录态发生错误(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
+                            var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                             callFail(error);
                         }                     
                     }
@@ -106,8 +106,8 @@ function request(options){
                 else{
                      // 清除登录态
                     Session.clear();
-                    message = '鉴权服务器检查登录态发生错误 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
-                    error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
+                    var message = '鉴权服务器检查登录态发生错误 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
+                    var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                     callFail(error);
                 }
             },
