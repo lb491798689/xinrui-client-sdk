@@ -1,5 +1,7 @@
 //返回一个JSON Object
 module.exports = {
+    WX_SUCCESS_CODE:0,
+
     WX_HEADER_CODE: 'X-WX-Code',
     WX_HEADER_ENCRYPTED_DATA: 'X-WX-Encrypted-Data',
     WX_HEADER_IV: 'X-WX-IV',
