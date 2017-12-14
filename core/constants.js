@@ -31,6 +31,7 @@ module.exports = {
     MA_WEIXIN_CODE_ERR                    : 40029,   //CODE无效
     MA_CHANGE_SESSION_ERR                 : 1006,    //新增修改SESSION失败
     MA_WEIXIN_RETURN_ERR                  : 1007,    //微信返回值错误
+    MA_SKEY_EXPIRED                       : 60011,   // Session过期
     MA_AUTH_ERR                           : 60012,   //鉴权失败
     MA_UPDATE_LASTVISITTIME_ERR           : 1008,    //更新最近访问时间失败
     MA_REQUEST_ERR                        : 1009,    //请求包不是json

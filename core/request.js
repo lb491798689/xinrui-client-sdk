@@ -80,9 +80,17 @@ function request(options){
                     {
                         callSuccess.apply(null, arguments);
                     }
+                    else{
+                        callFail.apply(null, arguments);
+                    }
+                    return;
                 }
-                else if(data && data[constants.WX_SESSION_MAGIC_ID]){
-                    if(data.code != constants.WX_SUCCESS_CODE)
+            
+                if(data && data[constants.WX_SESSION_MAGIC_ID]){  // 鉴权失败
+                    // 清除登录态
+                    Session.clear();
+                    var error, message;
+                    if(data.code == constants.MA_SKEY_EXPIRED)  // SKEY过期
                     {                  
                         // 如果是登录态无效，并且还没重试过，会尝试登录后刷新凭据重新请求
                         if (!hasRetried) {
@@ -90,29 +98,21 @@ function request(options){
                             doRequestWithLogin();
                             return;
                         }
-                        var message = '登录态已过期(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
-                        var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
-                        callFail(error);
+                        message = '登录态已过期';
+                        error = new RequestError(data.code, message);
                     }
                     else{
-                        // 成功地响应会话信息
-                        if(data.session){
-                            //data.session.userInfo = userInfo;
-                            Session.set(data.session);
-                            callSuccess.apply(null, arguments);
-                        }else{
-                            var message = '鉴权服务器检查登录态发生错误(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
-                            var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
-                            callFail(error);
-                        }                     
+                        message = '鉴权服务器检查登录态发生错误(' + (data.code || 'OTHER') + ')：' + (data.msg || '未知错误');
+                        error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);          
                     }
-                }
-                else{
-                     // 清除登录态
-                    Session.clear();
-                    var message = '鉴权服务器检查登录态发生错误 `' + options.loginUrl + '` 的时候正确使用了 SDK 输出登录结果';
-                    var error = new RequestError(constants.ERR_CHECK_LOGIN_FAILED, message);
                     callFail(error);
+                    return;
+                }
+                else{  // 每次带回的Session信息缓存
+                    if (data && data.session) {
+                        Session.set(data.session);
+                    }
+                    callSuccess.apply(null, arguments);
                 }
             },
             fail: callFail,
